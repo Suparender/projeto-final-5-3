@@ -24,3 +24,21 @@
 @import "@ionic/angular/css/text-alignment.css";
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
+
+@media (prefers-color-scheme: dark) {
+    ion-card {
+        color: #fff;
+    }
+}
+
+a {
+    text-decoration: none;
+}
+
+a[title="copyright"] {
+    color: inherit;
+}
+
+a[title="btn"] {
+    cursor: pointer;
+}
