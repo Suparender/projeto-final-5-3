@@ -47,6 +47,10 @@ const routes: Routes = [
     data: { authGuardPipe: toLogin }
   },
   {
+    path: 'cep',
+    loadChildren: () => import('./teste/cep/cep.module').then( m => m.CepPageModule)
+  },
+  {
     path: '**',
     redirectTo: '/e404',
     pathMatch: 'full'

@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Consulta de CEP
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item>
+      <ion-label position="stacked">Digite o CEP:</ion-label>
+      <ion-input type="text" [(ngModel)]="cepInput"></ion-input>
+    </ion-item>
+  </ion-list>
+
+  <ion-button expand="full" (click)="buscarCep()">Buscar</ion-button>
+
+  <ion-card *ngIf="cepData">
+    <ion-card-header>
+      Informações do CEP {{ cepData.cep }}
+    </ion-card-header>
+    <ion-card-content>
+      <p>Logradouro: {{ cepData.logradouro }}</p>
+      <p>Localidade: {{ cepData.localidade }}</p>
+      <p>Bairro: {{ cepData.bairro }}</p>
+      <p>UF: {{ cepData.uf }}</p>
+      <p>DDD: {{ cepData.ddd }}</p>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

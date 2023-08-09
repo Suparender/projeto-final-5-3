@@ -1,7 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Auth, authState, User } from '@angular/fire/auth';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
+import { collection, collectionData, Firestore } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-home',
@@ -15,15 +16,6 @@ export class HomePage {
   authState = authState(this.auth);
   authStateSubscription: Subscription;
 
-  public appPages = [
-    { title: 'Ínicio', url: '/home', icon: 'home' },
-    { title: 'Faça contato', url: '/contact', icon: 'chatbox-ellipses' },
-    { title: 'Tirar foto', url: '/camera', icon: 'camera' },
-    { title: 'Novo documento', url: '/addDoc', icon: 'document-text' },
-    { title: 'Sobre', url: '/about', icon: 'information-circle' },
-    { title: 'Privacidade', url: '/policies', icon: 'document-lock' }
-  ];
-
   public appUser = {
     logged: false,
     title: 'Login / Entrar',
@@ -34,6 +26,7 @@ export class HomePage {
 
 
   constructor() {
+    this.things = collectionData(this.fbCollection, { idField: 'id' }) as Observable<any>
     this.authStateSubscription = this.authState.subscribe((aUser: User | null) => {
       if (aUser !== null) {
         this.appUser = {
@@ -50,6 +43,15 @@ export class HomePage {
   ngOnDestroy() {
     // when manually subscribing to an observable remember to unsubscribe in ngOnDestroy
     this.authStateSubscription.unsubscribe();
+  }
+
+  private firestore: Firestore = inject(Firestore)
+
+  private fbCollection = collection(this.firestore, 'contact')
+
+  public things: Observable<any>
+  
+  ngOnInit() {
   }
 
 

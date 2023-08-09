@@ -9,15 +9,15 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <form action="" [formGroup]="contactForm">
+  <form action="" >
     <!--*ngIf="!sended && logged"-->
-    <p>Preencha todos os campos abaixo para entrar em contato com a equipe do {{ env.appName }}.</p>
+   <!-- <p>Preencha todos os campos abaixo para entrar em contato com a equipe do {{ env.appName }}.</p>
     <p>
       <ion-input label="Nome:" type="text" name="name" label-placement="floating" fill="outline"
         placeholder="Seu nome completo" [autofocus]="true" error-text="Nome inválido!" formControlName="name"></ion-input>
     </p>
 
-    <!-- <p>
+     <p>
       <ion-input label="Email:" type="email" name="email" label-placement="floating" fill="outline"
         placeholder="Seu e-mail" [(ngModel)]="form.email" error-text="E-mail inválido!" required email></ion-input>
     </p>
