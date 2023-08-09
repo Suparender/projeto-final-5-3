@@ -11,9 +11,9 @@ export class AppComponent {
 
   public appPages = [
     { title: 'Home', url: '/home', icon: 'home' },
-    { title: 'Contato', url: '/contact', icon: 'home' },
-    { title: 'Politicas de privacidade', url: '/privacypolices', icon: 'home' },
-    { title: 'Sobre', url: '/about', icon: 'home' }
+    { title: 'Contato', url: '/contact', icon: 'chatbubbles' },
+    { title: 'Sobre', url: '/about', icon: 'document-text' },
+    { title: 'Politicas de privacidade', url: '/privacypolices', icon: 'document-lock' }
   ];
 
   public env = environment

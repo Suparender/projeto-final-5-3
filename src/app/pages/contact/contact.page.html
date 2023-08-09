@@ -9,41 +9,51 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <form action="" [formGroup]="contactForm">
-    <!--*ngIf="!sended && logged"-->
+  <form action="" [formGroup]="contactForm" *ngIf="!sended && logged">
     <p>Preencha todos os campos abaixo para entrar em contato com a equipe do {{ env.appName }}.</p>
     <p>
       <ion-input label="Nome:" type="text" name="name" label-placement="floating" fill="outline"
-        placeholder="Seu nome completo" [autofocus]="true" error-text="Nome inválido!" formControlName="name"></ion-input>
+        placeholder="Seu nome completo" [autofocus]="true" error-text="Nome inválido!" formControlName="name">
+      </ion-input>
     </p>
 
-    <!-- <p>
+    <p>
       <ion-input label="Email:" type="email" name="email" label-placement="floating" fill="outline"
-        placeholder="Seu e-mail" [(ngModel)]="form.email" error-text="E-mail inválido!" required email></ion-input>
+        placeholder="Seu e-mail" error-text="E-mail inválido!" formControlName="email"></ion-input>
     </p>
 
     <p>
       <ion-input label="Assunto:" type="text" name="subject" label-placement="floating" fill="outline"
-        placeholder="Assunto do contato" [(ngModel)]="form.subject" error-text="Assunto inválido!" minlength="3"
-        required></ion-input>
+        placeholder="Assunto do contato" error-text="Assunto inválido!" formControlName="subject"></ion-input>
     </p>
 
     <p>
       <ion-textarea label="Mensagem:" name="message" labelPlacement="floating" fill="outline" [autoGrow]="true"
-        placeholder="Mensagem do contato" [(ngModel)]="form.message" error-text="Mensagem inválida!" minlength="5"
-        required></ion-textarea>
-    </p> -->
+        placeholder="Mensagem do contato" error-text="Mensagem inválida!" formControlName="message"></ion-textarea>
+    </p>
 
-    <!-- <p>
+    <p>Adicionar imagem:</p>
+    <ion-img style="height: 250px;" [src]="imagem.url" alt="Foto carregada" *ngIf="imagem.uploaded"></ion-img>
+
+    <ion-button (click)="general.getPhoto(imagem)" *ngIf="!imagem.uploaded">
+      <ion-icon name="camera" slot="start"></ion-icon>
+      Selecionar
+    </ion-button>
+
+    <ion-button (click)="general.getPhoto(imagem)" *ngIf="imagem.uploaded">
+      <ion-icon name="pencil" slot="start"></ion-icon>
+      Alterar
+    </ion-button>
+
+    <p>
       <ion-button type="submit" (click)="sendForm()">
         <ion-icon name="send" slot="start"></ion-icon>
         Enviar
       </ion-button>
-    </p> -->
+    </p>
   </form>
 
-  <!-- <ion-card>
-    *ngIf="!logged"
+  <ion-card *ngIf="!logged">
     <ion-card-content>
       <p>Detectamos que o usuário ainda não está logado, por favor faça login para poder enviar o cantato.</p>
       <ion-button routerLink="/login">
@@ -51,26 +61,26 @@
         Entrar
       </ion-button>
     </ion-card-content>
-  </ion-card> -->
+  </ion-card>
 
-  <!-- <div> -->
-    <!-- *ngIf="sended && logged" -->
-    <!-- <h4>Seu contato foi enviado com sucesso.</h4>
-    <p><em>Obrigado...</em></p> -->
-    <!-- <p><strong>ID do formulário cadastrado:</strong> {{ idSaved }}</p> -->
-    <!-- <ion-button routerLink="/home">
+  <div *ngIf="sended && logged">
+    <h4>Seu contato foi enviado com sucesso.</h4>
+    <p><em>Obrigado...</em></p>
+    <p><strong>ID do formulário cadastrado:</strong> {{ idSaved }}</p>
+    <ion-button routerLink="/home">
       <ion-icon name="home" slot="start"></ion-icon>
       Voltar ao ínicio
     </ion-button>
-  </div> -->
+  </div>
 
-  <!-- <ion-loading class="custom-loading" [isOpen]="sending" showBackdrop="false" message="Carregando..." spinner="circles"></ion-loading> -->
+  <ion-loading class="custom-loading" [isOpen]="sending" showBackdrop="false" message="Carregando..." spinner="circles">
+  </ion-loading>
 </ion-content>
 
-<!-- <ion-footer>
+<ion-footer>
   <ion-toolbar>
     <ion-title class="ion-text-center">
       <a [href]="env.authorUrl" target="_blank" title="copyright">&copy; 2023 {{ env.author }}.</a>
     </ion-title>
   </ion-toolbar>
-</ion-footer> -->
+</ion-footer>
