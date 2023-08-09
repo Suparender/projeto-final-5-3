@@ -47,7 +47,7 @@ export class HomePage {
 
   private firestore: Firestore = inject(Firestore)
 
-  private fbCollection = collection(this.firestore, 'contact')
+  private fbCollection = collection(this.firestore, 'contacts')
 
   public things: Observable<any>
   

@@ -3,7 +3,8 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>home</ion-title>
+    <ion-title class="ion-text-center">Início</ion-title>
+    <ion-icon name="home" slot="end" size="large" class="ion-margin"></ion-icon>
   </ion-toolbar>
 </ion-header>
 
@@ -26,3 +27,11 @@
   </div>
 
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-title class="ion-text-center">
+      <a [href]="env.authorUrl" target="_blank" title="copyright">&copy; 2023 {{ env.author }}.</a>
+    </ion-title>
+  </ion-toolbar>
+</ion-footer>

@@ -1,6 +1,9 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>e404</ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Erro</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -10,4 +13,16 @@
       <ion-title size="large">e404</ion-title>
     </ion-toolbar>
   </ion-header>
+
+  <div class="ion-padding ion-text-center">
+    <h2>Ooopa!</h2>
+
+    <p>A url não existe nesse site</p>
+    <p>Por favor use o menu lateral para acessar os conteudos do site</p>
+    <ion-img src="./assets/error.png" style="width: 300px; object-fit: cover; margin: auto;" ></ion-img>
+  </div>
+
+  <div class="ion-text-center">
+  <ion-button href="/home" class="ion-padding">Voltar ao inicio</ion-button>
+  </div>
 </ion-content>
