@@ -1,6 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
+import { authState, User, Auth } from '@angular/fire/auth';
 import { DocumentSnapshot, Firestore, doc, getDoc, updateDoc } from '@angular/fire/firestore';
 import { getStorage, ref, deleteObject } from '@angular/fire/storage';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { GeneralService } from 'src/app/services/general.service';
 import { environment } from 'src/environments/environment';
@@ -13,7 +15,6 @@ import { environment } from 'src/environments/environment';
 export class OneViewPage implements OnInit {
   public env = environment;
   public alertDelete = false;
-  public alertBreve = false;
   public alertButtons = [
     {
       text: 'Cancel',
@@ -28,23 +29,23 @@ export class OneViewPage implements OnInit {
       }
     }
   ];
-  public breveButtons = [
-    {
-      text: 'Ok',
-      handler: () => {
-        this.alertBreve = false
-      }
-    }
-  ];
   public deleting = false;
 
   private firestore: Firestore = inject(Firestore);
   private router: Router = inject(Router);
   public general: GeneralService = inject(GeneralService);
-
+  private auth: Auth = inject(Auth);
+  private fb: FormBuilder = inject(FormBuilder);
+  contactForm: FormGroup = this.fb.group({});
+  
   public docId = '';
   private docSnap !: DocumentSnapshot;
   public documents: any;
+  authStateSubscription: any;
+  public logged = false;
+  authState = authState(this.auth);
+
+   
 
   async ngOnInit() {
     // Pega os dados do post e se não tiver volta ao ínicio
@@ -58,7 +59,23 @@ export class OneViewPage implements OnInit {
     this.documents = await this.docSnap.data();
 
     if(this.documents == undefined) location.reload()
-  }
+
+    // Observer que obtém status de usuário logado.
+   this.authStateSubscription = this.authState.subscribe(
+    (userData: User | null) => {
+      // Se tem alguém logado.
+      if (userData) {
+        this.logged = true;
+        this.contactForm.get('name')?.setValue(userData.displayName);
+        this.contactForm.get('email')?.setValue(userData.email);
+        return
+      }
+
+      this.logged = false
+    }
+  )
+}
+  
 
   ngOnDestroy() {
     this.general.formValues(this.documents, null)

@@ -33,8 +33,8 @@
       <ion-grid class="ion-text-center ion-no-padding" style="margin-top: 14px;">
         <ion-row>
           <ion-col><ion-button routerLink="/home">Listar Todos</ion-button></ion-col>
-          <ion-col><ion-button (click)="alertBreve = true;">Editar</ion-button></ion-col>
-          <ion-col><ion-button (click)="alertDelete = true;">Apagar</ion-button></ion-col>
+          <ion-col><ion-button (click)="editDoc()" *ngIf="logged">Editar</ion-button></ion-col>
+          <ion-col><ion-button (click)="alertDelete = true;" *ngIf="logged">Apagar</ion-button></ion-col>
         </ion-row>
       </ion-grid>
     </ion-card-content>
@@ -42,8 +42,6 @@
 
   <!-- Elemento de alerta -->
   <ion-alert header="Realmente deseja exluir este contato?" [buttons]="alertButtons" [isOpen]="alertDelete"></ion-alert>
-
-  <ion-alert header="Em breve...." [buttons]="breveButtons" [isOpen]="alertBreve"></ion-alert>
 
   <!-- Elemento de carregamento -->
   <ion-loading class="custom-loading" [isOpen]="deleting" showBackdrop="false" message="Carregando..."
