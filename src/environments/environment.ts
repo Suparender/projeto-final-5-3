@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
   appName: 'Projeto Final 5.3',
-  appDescription: '',
+  appDescription: 'Projeto para avaliação final da UC do curso.',
   signInMethod: 'redirect', // or popup
   author: 'Collab',
   authorUrl: 'https://github.com/Suparender/projeto-final-5-3.git',

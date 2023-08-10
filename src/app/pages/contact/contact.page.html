@@ -13,13 +13,34 @@
     <p>Preencha todos os campos abaixo para entrar em contato com a equipe do {{ env.appName }}.</p>
     <p>
       <ion-input label="Nome:" type="text" name="name" label-placement="floating" fill="outline"
-        placeholder="Seu nome completo" [autofocus]="true" error-text="Nome inválido!" formControlName="name">
-      </ion-input>
+        placeholder="Seu nome completo" [autofocus]="true" error-text="Nome inválido!"
+        formControlName="name"></ion-input>
     </p>
 
     <p>
       <ion-input label="Email:" type="email" name="email" label-placement="floating" fill="outline"
         placeholder="Seu e-mail" error-text="E-mail inválido!" formControlName="email"></ion-input>
+    </p>
+
+    <p>
+      <ion-input label="Cep:" type="text" name="cep" label-placement="floating" fill="outline" placeholder="Seu cep"
+        error-text="Cep inválido!" formControlName="cep" (keyup)="getCep()"></ion-input>
+    </p>
+
+    <p>
+      <ion-input label="Estado:" type="text" name="logradouro" label-placement="floating" fill="outline"
+        placeholder="Seu estado" error-text="Estado inválido!" formControlName="logradouro"></ion-input>
+    </p>
+
+    <p>
+      <ion-input label="Cidade:" type="text" name="local" label-placement="floating" fill="outline"
+        placeholder="Sua cidade" error-text="Local inválido!" 
+        formControlName="local"></ion-input>
+    </p>
+
+    <p>
+      <ion-input label="Bairro:" type="text" name="bairro" label-placement="floating" fill="outline"
+        placeholder="Seu bairro" error-text="Bairro inválido!" formControlName="bairro"></ion-input>
     </p>
 
     <p>
@@ -70,6 +91,11 @@
     <ion-button routerLink="/home">
       <ion-icon name="home" slot="start"></ion-icon>
       Voltar ao ínicio
+    </ion-button>
+
+    <ion-button (click)="sended = false;">
+      <ion-icon name="refresh" slot="start"></ion-icon>
+      Enviar novo contato
     </ion-button>
   </div>
 

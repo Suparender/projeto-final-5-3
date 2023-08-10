@@ -1,11 +1,12 @@
 import { Component, inject } from '@angular/core';
-import { Firestore, addDoc, collection, collectionSnapshots } from '@angular/fire/firestore';
+import { Firestore, addDoc, collection } from '@angular/fire/firestore';
 import { Auth, User, authState } from '@angular/fire/auth';
 import { Storage, getDownloadURL, ref, uploadString } from '@angular/fire/storage';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { environment } from 'src/environments/environment';
 import { GeneralService } from 'src/app/services/general.service';
 import { Subscription } from 'rxjs';
+import { CepService } from 'src/app/services/cep.service';
 
 @Component({
   selector: 'app-contact',
@@ -31,6 +32,7 @@ export class ContactPage {
   private auth: Auth = inject(Auth);
   private storage: Storage = inject(Storage);
   public general: GeneralService = inject(GeneralService);
+  private cepService: CepService = inject(CepService);
   private fb: FormBuilder = inject(FormBuilder);
   contactForm: FormGroup = this.fb.group({});
 
@@ -46,6 +48,10 @@ export class ContactPage {
     this.contactForm = this.fb.group({
       name: ['', [Validators.minLength(3), Validators.pattern('[^0-9]*'), Validators.required]],
       email: ['', [Validators.minLength(5), Validators.email, Validators.required]],
+      cep: ['', [Validators.minLength(8), Validators.pattern('[0-9]*'), Validators.required]],
+      logradouro: ['', [Validators.minLength(3), Validators.required]],
+      local: ['', [Validators.minLength(3), Validators.required]],
+      bairro: ['', [Validators.minLength(3), Validators.required]],
       subject: ['', [Validators.minLength(3), Validators.required]],
       message: ['', [Validators.minLength(5), Validators.required]]
     });
@@ -56,8 +62,8 @@ export class ContactPage {
         // Se tem alguém logado.
         if (userData) {
           this.logged = true;
-          this.contactForm.value.name = userData.displayName + '';
-          this.contactForm.value.email = userData.email + '';
+          this.contactForm.get('name')?.setValue(userData.displayName);
+          this.contactForm.get('email')?.setValue(userData.email);
           return
         }
 
@@ -68,11 +74,14 @@ export class ContactPage {
 
   ngOnDestroy() {
     // Remove o observer ao concluir o componente.
-    this.authStateSubscription.unsubscribe()
+    this.authStateSubscription.unsubscribe();
+    this.sended = false
   }
 
   // Salva contato.
   async sendForm() {
+    if(!this.imagem.uploaded) return;
+    
     // Se enviando(sending) for verdadeiro pare aqui, senão, continue.
     if (this.sending) return;
     this.sending = true;
@@ -128,5 +137,15 @@ export class ContactPage {
       this.general.formValues(this.contactForm.value, null);
       this.sending = false
     }
+  }
+
+  getCep() {
+    if(this.contactForm.value.cep.length < 8 || this.contactForm.value.cep.length > 9) return;
+
+    this.cepService.getCep(this.contactForm.value.cep).subscribe(data => {
+      this.contactForm.get('logradouro')?.setValue(data.logradouro);
+      this.contactForm.get('local')?.setValue(data.localidade);
+      this.contactForm.get('bairro')?.setValue(data.bairro)
+    })
   }
 }

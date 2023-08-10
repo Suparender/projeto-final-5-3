@@ -45,10 +45,10 @@ export class GeneralService {
     return sequence
   }
 
-  public formatText(str: string): string {
+  formatText(str: string):string {
     if (!str.trim().match(/[./]$/)) {
-      return str.trim() + "."
+      return str.trim() + ".";
     }
-    return str.trim()
-  }
+    return str.trim();
+  }  
 }
