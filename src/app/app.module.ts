@@ -13,7 +13,7 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { HttpClientModule } from '@angular/common/http';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [AppComponent],
@@ -24,7 +24,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     HttpClientModule,
     ReactiveFormsModule,
     HttpClientModule,
-    FormsModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)), // Conecta ao firebase
     provideAuth(() => getAuth()), // Autenticação do firebase
     provideFirestore(() => getFirestore()), // Banco de dados firebase

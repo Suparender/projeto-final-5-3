@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { Firestore, collection, updateDoc, doc, getDoc, DocumentSnapshot } from '@angular/fire/firestore';
 import { Storage, getStorage, deleteObject, getDownloadURL, ref, uploadString } from '@angular/fire/storage';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -19,78 +19,105 @@ export class EditPage implements OnInit {
     {
       text: 'Cancel',
       handler: () => {
-        this.alertSend = false
+        this.alertSend = false;
       }
     },
     {
       text: 'Confirm',
       handler: () => {
-        this.sendForm()
+        this.sendForm();
       }
     }
   ];
 
-  // Modela entidade imagem
   public imagem = {
     url: '',
     format: '',
     uploaded: false
   };
 
-  public form = {
-    name: '',
-    email: '',
-    cep: '',
-    logradouro: '',
-    local: '',
-    bairro: '',
-    subject: '',
-    message: ''
-  };
+  public form: any = {};
 
   public sending = false;
   private docId = '0';
 
-  public general: GeneralService = inject(GeneralService);
-  private cepService: CepService = inject(CepService);
-  private firestore: Firestore = inject(Firestore);
-  private storage: Storage = inject(Storage);
-  private router: Router = inject(Router);
+  constructor(
+    @Inject(GeneralService) public general: GeneralService,
+    @Inject(CepService) private cepService: CepService,
+    @Inject(Firestore) private firestore: Firestore,
+    @Inject(FormBuilder) private fb: FormBuilder,
+    @Inject(Storage) private storage: Storage,
+    @Inject(Router) private router: Router
+  ) { }
 
-  // Referência à coleção "contacts" no Firestore.
-  // Se a coleção não existe, será criada.
+  getCep() {
+    if (this.editForm.value.cep.length < 8 || this.editForm.value.cep.length > 9) return;
+
+    this.cepService.getCep(this.editForm.value.cep).subscribe(
+      (data) => {
+        this.editForm.patchValue({
+          logradouro: data.logradouro,
+          local: data.localidade,
+          bairro: data.bairro
+        });
+      }
+    );
+
+  }
+
+  editForm: FormGroup = this.fb.group({
+    name: ['', [Validators.minLength(3), Validators.pattern('[^0-9]*'), Validators.required]],
+    email: ['', [Validators.minLength(5), Validators.email, Validators.required]],
+    cep: ['', [Validators.minLength(8), Validators.pattern('[0-9]*'), Validators.required]],
+    logradouro: ['', [Validators.minLength(3), Validators.required]],
+    local: ['', [Validators.minLength(3), Validators.required]],
+    bairro: ['', [Validators.minLength(3), Validators.required]],
+    subject: ['', [Validators.minLength(3), Validators.required]],
+    message: ['', [Validators.minLength(5), Validators.required]]
+  });
+
   contactsCollection = collection(this.firestore, 'contacts');
-  private docSnap !: DocumentSnapshot;
+  private docSnap!: DocumentSnapshot;
   public documents: any;
 
   async ngOnInit() {
-    // Recupera o index via post caso não tenha volta ao ínicio
-    this.docId = (history.state.index === undefined) ? '0' : history.state.index;
-    if (this.docId == '0') this.router.navigate(['/home']);
+    this.docId = history.state.index === undefined ? '0' : history.state.index;
+    if (this.docId === '0') {
+      this.router.navigate(['/home']);
+      return; // Added return here to prevent further execution
+    }
 
-    this.docSnap = await getDoc(doc(this.firestore, 'contacts', this.docId));
-    this.documents = await this.docSnap.data();
-    if (this.documents == undefined) location.reload();
+    try {
+      this.docSnap = await getDoc(doc(this.firestore, 'contacts', this.docId));
+      this.documents = this.docSnap.data();
 
-    this.form.name = this.documents.form.name;
-    this.form.email = this.documents.form.email;
-    this.form.cep = this.documents.form.cep;
-    this.form.logradouro = this.documents.form.logradouro;
-    this.form.local = this.documents.form.local;
-    this.form.bairro = this.documents.form.bairro;
-    this.form.subject = this.documents.form.subject;
-    this.form.message = this.documents.form.message;
+      this.editForm.setValue({
+        name: this.documents.form.name,
+        email: this.documents.form.email,
+        cep: this.documents.form.cep,
+        logradouro: this.documents.form.logradouro,
+        local: this.documents.form.local,
+        bairro: this.documents.form.bairro,
+        subject: this.documents.form.subject,
+        message: this.documents.form.message
+      });
+    } catch (error) {
+      console.error('Error fetching document:', error);
+    }
+
+    if (this.documents === undefined) {
+      location.reload();
+    }
   }
 
   ngOnDestroy() {
     this.general.formValues(this.form, null);
-    this.general.formValues(this.documents, null)
+    this.general.formValues(this.documents, null);
   }
 
   async sendForm() {
     if (!this.imagem.uploaded) return;
 
-    // Se enviando(sending) for verdadeiro pare aqui, senão, continue.
     if (this.sending) return;
     this.sending = true;
 
@@ -100,43 +127,38 @@ export class EditPage implements OnInit {
         const storage = getStorage();
         const desertRef = ref(storage, `${this.documents.imagem.name}.${this.documents.imagem.format}`);
 
-        // Deleta o arquivo
         await deleteObject(desertRef).catch((error) => {
-          console.log("Erro ao deletar a imagem", error);
-          return
+          console.log("Error deleting image", error);
+          return;
         });
 
-        // Cria um nome aleatório para o novo arquivo.
         nameImg = this.general.getRandomChars(10);
         const storageRef = ref(this.storage, `${nameImg}.${this.imagem.format}`);
 
-        // Envia o arquivo para o servidor.
         await uploadString(
           storageRef,
-          // Extrai apenas o 'Base64' do arquivo.
           this.imagem.url.split(',')[1],
           'base64',
           { contentType: `image/${this.imagem.format}` }
         );
 
-        // Se salvou a imagem, obtém o URL da imagem salva.
         const res = await getDownloadURL(ref(storageRef));
         this.documents.imagem.url = res;
         this.documents.imagem.format = this.imagem.format;
       }
 
-      // O método 'updateDoc()' do Firestore atualiza um campo de um documento
       await updateDoc(
-        doc(this.firestore, 'documents', this.docId),   // Referência do documento
-        {                                               // campos + valores a serem alterados
+        doc(this.firestore, 'contacts', this.docId),
+        {
           'form': {
-            'name': this.form.name,
-            'email': this.form.email,
-            'cep': this.form.cep,
-            'logradouro': this.form.logradouro,
-            'local': this.form.local,
-            'subject': this.form.subject,
-            'message': this.form.message
+            'name': this.editForm.value.name,
+            'email': this.editForm.value.email,
+            'cep': this.editForm.value.cep,
+            'logradouro': this.editForm.value.logradouro,
+            'local': this.editForm.value.local,
+            'bairro': this.editForm.value.bairro,
+            'subject': this.editForm.value.subject,
+            'message': this.editForm.value.message
           },
           'imagem': {
             'url': this.imagem.url,
@@ -144,31 +166,23 @@ export class EditPage implements OnInit {
             'name': nameImg
           }
         }
-      )
+      );
 
     } catch (error) {
-      console.error('Erro ao enviar o formulário', error);
+      console.error('Error sending form', error);
       this.sending = false;
-      return
-
+      return;
     } finally {
       this.general.formValues(this.form, null);
       this.general.formValues(this.documents, null);
       this.sending = false;
       setTimeout(() => {
-        this.router.navigate(['/home'])
-      }, 1000)
+        this.router.navigate(['/home']);
+      }, 1000);
     }
+
+    
+
   }
 
-  getCep() {
-    if (this.form.cep.length < 8 || this.form.cep.length > 9) return;
-
-    this.cepService.getCep(this.form.cep).subscribe(
-      (data) => {
-        this.form.logradouro = data.logradouro;
-        this.form.local = data.localidade;
-        this.form.bairro = data.bairro
-      })
-  }
 }
