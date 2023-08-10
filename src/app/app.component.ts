@@ -11,9 +11,9 @@ export class AppComponent {
 
   public appPages = [
     { title: 'Home', url: '/home', icon: 'home' },
-    { title: 'Contato', url: '/contact', icon: 'home' },
-    { title: 'Politicas de privacidade', url: '/privacypolices', icon: 'home' },
-    { title: 'Sobre', url: '/about', icon: 'home' }
+    { title: 'Contato', url: '/contact', icon: 'chatbubbles' },
+    { title: 'Sobre', url: '/about', icon: 'document-text' },
+    { title: 'Politicas de privacidade', url: '/privacypolices', icon: 'document-lock' }
   ];
 
   public env = environment
@@ -28,7 +28,6 @@ export class AppComponent {
     // mostra pessoa logada e troca informações 
     this.authStateSubscription = this.authState$.subscribe((aUser: User | null) => {
       //handle auth state changes here. Note, that user will be null if there is no currently logged in user.
-      console.log(aUser)
       if (aUser !== null) {
         this.appUser = {
           logged: true,

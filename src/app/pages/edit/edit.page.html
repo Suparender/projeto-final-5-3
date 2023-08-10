@@ -1,0 +1,101 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title class="ion-text-center">Editar Contato</ion-title>
+    <ion-icon name="pencil" size="large" slot="end" class="ion-margin"></ion-icon>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <p>Altere os dados dos campos e aperte "enviar para editar o contato".</p>
+  <p>
+    <ion-item>
+      <ion-label position="floating">Nome:</ion-label>
+      <ion-input type="text" [(ngModel)]="form.name" autofocus="true"></ion-input>
+    </ion-item>
+  </p>
+
+  <p>
+    <ion-item>
+      <ion-label position="floating">E-mail:</ion-label>
+      <ion-input type="email" [(ngModel)]="form.email" autofocus="true"></ion-input>
+    </ion-item>
+  </p>
+
+  <p>
+    <ion-item>
+      <ion-label position="floating">Cep:</ion-label>
+      <ion-input type="text" [(ngModel)]="form.cep" autofocus="true" (keuyp)="getCep()"></ion-input>
+    </ion-item>
+  </p>
+
+  <p>
+    <ion-item>
+      <ion-label position="floating">Estado:</ion-label>
+      <ion-input type="text" [(ngModel)]="form.logradouro" autofocus="true"></ion-input>
+    </ion-item>
+  </p>
+
+  <p>
+    <ion-item>
+      <ion-label position="floating">Cidade:</ion-label>
+      <ion-input type="text" [(ngModel)]="form.local" autofocus="true"></ion-input>
+    </ion-item>
+  </p>
+
+  <p>
+    <ion-item>
+      <ion-label position="floating">Bairro:</ion-label>
+      <ion-input type="text" [(ngModel)]="form.bairro" autofocus="true"></ion-input>
+    </ion-item>
+  </p>
+
+  <p>
+    <ion-item>
+      <ion-label position="floating">Assunto:</ion-label>
+      <ion-input type="text" [(ngModel)]="form.subject" autofocus="true"></ion-input>
+    </ion-item>
+  </p>
+
+  <p>
+    <ion-item>
+      <ion-label position="floating">Mensagem:</ion-label>
+      <ion-textarea [(ngModel)]="form.message" auto-grow="true"></ion-textarea>
+    </ion-item>
+  </p>
+
+  <ion-img style="height: 250px;" [src]="documents.imagem.url" alt="Foto do contato {{ documents.form.name }}"
+    *ngIf="!imagem.uploaded"></ion-img>
+  <ion-img style="height: 250px;" [src]="imagem.url" alt="Foto alterada do contato {{ documents.form.name }}"
+    *ngIf="imagem.uploaded"></ion-img>
+
+  <ion-button (click)="general.getPhoto(imagem)">
+    <ion-icon name="pencil" slot="start"></ion-icon>
+    Alterar
+  </ion-button>
+
+  <p>
+    <ion-button (click)="alertSend = true;">
+      <ion-icon name="send" slot="start"></ion-icon>
+      Enviar
+    </ion-button>
+  </p>
+
+  <!-- Elemento de alerta -->
+  <ion-alert header="Realmente deseja alterar os dados deste contato?" [buttons]="alertButtons"
+    [isOpen]="alertSend"></ion-alert>
+
+  <!-- Elemento de carregamento -->
+  <ion-loading class="custom-loading" [isOpen]="sending" showBackdrop="false" message="Carregando..."
+    spinner="circles"></ion-loading>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-title class="ion-text-center">
+      <a [href]="env.authorUrl" target="_blank" title="copyright">&copy; 2023 {{ env.author }}.</a>
+    </ion-title>
+  </ion-toolbar>
+</ion-footer>
